@@ -291,7 +291,7 @@ export default function Page() {
                                 <h3 className="text-xl mb-2 text-black">Output:</h3>
                                 {userOutput.map((output, index) => (
                                     <div className="output m-2 text-xl" key={index}>
-                                        <pre className=" bg-black overflow-x-auto text-white p-2 ">{output}</pre>
+                                        <pre className="bg-black overflow-x-auto text-white p-2">{output}</pre>
                                     </div>
                                 ))}
                             </>
