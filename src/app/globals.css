@@ -2,56 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-  background-color:cadetblue;
-  padding-left: 5px;
-  padding-right: 5px;
+body {
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 @media (max-width: 768px) {
-  .flex {
-    flex-direction: column;
-  }
+    .flex {
+        flex-direction: column;
+    }
 
-  .flex > * {
-    width: 100%;
-  }
+    .flex > * {
+        width: 100%;
+    }
 
-  .ace-editor {
-    height: 300px !important;
-  }
+    .ace-editor {
+        height: 300px !important;
+    }
 
-  .flex .flex-col {
-    margin: 0 !important;
-  }
+    .flex .flex-col {
+        margin: 0 !important;
+    }
 
-  .theme-select,
-  .font-size-select,
-  .language-select {
-    margin: 0 !important;
-  }
+    .theme-select,
+    .font-size-select,
+    .language-select {
+        margin: 0 !important;
+    }
+    .w-20 {
+        width: 30pt;
+        height: 20pt;
+    }
 }
-
 
 /* styles/loadingComponent.css */
 
 .loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .loading-spinner {
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #333;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #333;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
