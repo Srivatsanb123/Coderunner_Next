@@ -82,7 +82,7 @@ const darkIcon = (
 
 const lightThemeStyles = `
   body {
-    background-color: #87CEEB;
+    background-color: #F6EACB;
   }
 `;
 
@@ -277,7 +277,7 @@ export default function Page() {
                         <input
                             type="text"
                             id="filename"
-                            className="w-1/2 p-2 bg-gray-800 border border-gray-300 rounded-lg focus:outline-none"
+                            className="w-1/2 p-2 bg-zinc-300 border border-gray-300 rounded-lg focus:outline-none"
                         />
                         <button
                             onClick={saveCodeToFile}
@@ -290,7 +290,7 @@ export default function Page() {
                         <input
                             type="file"
                             onChange={loadCodeFromFile}
-                            className="w-full p-3 bg-gray-800 border border-gray-300 rounded-lg focus:outline-none"
+                            className="w-full p-3 bg-zinc-300 border border-gray-300 rounded-lg focus:outline-none"
                         />
                     </div>
                     <div className="flex items-center flex-wrap justify-between mb-4">
