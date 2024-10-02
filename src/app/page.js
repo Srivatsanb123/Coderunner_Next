@@ -303,7 +303,7 @@ export default function Page() {
                                 id="themeSelect"
                                 value={theme}
                                 onChange={(e) => setTheme(e.target.value)}
-                                className=" text-black first-letter:rounded-md border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
+                                className="rounded text-black first-letter:rounded-md border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
                             >
                                 {themeOptions.map((option) => (
                                     <option
