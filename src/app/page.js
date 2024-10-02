@@ -235,7 +235,7 @@ export default function Page() {
     }
 
     return (
-        <div>
+        <div className={isDarkmode ? "text-white" : "text-black"}>
             <div className="bg-red-500 p-2 my-2 rounded flex flex-row justify-between items-center">
                 <div className="mb-2 md:mb-0">
                     <h1 className="font-bold text-gray-700 text-xl">
@@ -281,12 +281,12 @@ export default function Page() {
                         />
                         <button
                             onClick={saveCodeToFile}
-                            className="p-2 m-2 rounded bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+                            className="p-2 m-2 text-black rounded bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
                         >
                             Save Code
                         </button>
                     </div>
-                    <div>
+                    <div className="text-black">
                         <input
                             type="file"
                             onChange={loadCodeFromFile}
@@ -294,15 +294,16 @@ export default function Page() {
                         />
                     </div>
                     <div className="flex items-center flex-wrap justify-between mb-4">
-                        <div className="theme-select space-x-4 p-4">
+                        <div className="theme-select space-x-4 p-4 ">
                             <label htmlFor="themeSelect" className="">
                                 Select Editor Theme:
                             </label>
                             <select
+                            
                                 id="themeSelect"
                                 value={theme}
                                 onChange={(e) => setTheme(e.target.value)}
-                                className="rounded-md border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
+                                className=" text-black first-letter:rounded-md border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
                             >
                                 {themeOptions.map((option) => (
                                     <option
@@ -324,7 +325,7 @@ export default function Page() {
                                 onChange={(e) =>
                                     setFontSize(parseInt(e.target.value))
                                 }
-                                className="rounded-md border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
+                                className="rounded-md text-black border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
                             >
                                 {fontSizeOptions.map((option) => (
                                     <option
@@ -352,7 +353,7 @@ export default function Page() {
                                         );
                                     setUserLang(selectedLanguage);
                                 }}
-                                className="rounded-md border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
+                                className="rounded-md text-black border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
                             >
                                 {languageOptions.map((option) => (
                                     <option
@@ -372,7 +373,7 @@ export default function Page() {
                             <>
                                 <h3 className="text-xl mb-2">Test Cases:</h3>
                                 <div className="flex">
-                                    <div className="add-test-case bg-white m-2 w-fit p-2 text-center rounded">
+                                    <div className="add-test-case text-black bg-white m-2 w-fit p-2 text-center rounded">
                                         <button
                                             onClick={addTestCase}
                                             className="add-test-case-button w-full"
@@ -380,7 +381,7 @@ export default function Page() {
                                             Add +
                                         </button>
                                     </div>
-                                    <div className="del-test-case bg-white m-2 w-fit p-2 text-center rounded">
+                                    <div className="del-test-case bg-white m-2 text-black w-fit p-2 text-center rounded">
                                         <button
                                             onClick={deleteTestCase}
                                             className="w-full"
@@ -405,7 +406,7 @@ export default function Page() {
                                         />
                                     ))}
                                 </div>
-                                <div className="bg-red-600 m-2 text-center w-28 shadow-inner rounded shadow-red-900">
+                                <div className="bg-red-600 m-2 text-black text-center w-28 shadow-inner rounded shadow-red-900">
                                     <button
                                         onClick={runCode}
                                         className="run-button w-full"
