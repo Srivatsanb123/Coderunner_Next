@@ -402,7 +402,7 @@ export default function Page() {
                                             onChange={(e) =>
                                                 handleTestCaseChange(e, index)
                                             }
-                                            className="test-input m-2 border resize-none p-2"
+                                            className="test-input text-black m-2 border resize-none p-2"
                                         />
                                     ))}
                                 </div>
