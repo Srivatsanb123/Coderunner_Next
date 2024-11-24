@@ -281,7 +281,7 @@ export default function Page() {
                         />
                         <button
                             onClick={saveCodeToFile}
-                            className="p-2 m-2 text-black rounded bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+                            className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                         >
                             Save Code
                         </button>
@@ -406,15 +406,15 @@ export default function Page() {
                                         />
                                     ))}
                                 </div>
-                                <div className="bg-red-600 m-2 text-black text-center w-28 shadow-inner rounded shadow-red-900">
-                                    <button
-                                        onClick={runCode}
-                                        className="run-button w-full"
-                                        disabled={loading}
-                                    >
-                                        Run code &gt;&gt;
-                                    </button>
-                                </div>
+                                <div className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 inline-flex items-center">
+    <button
+        onClick={runCode}
+        disabled={loading}
+    >
+        ▶&nbsp;Run
+    </button>
+</div>
+
 
                                 <h3 className="text-xl mb-2">Output:</h3>
                                 {userOutput.map((output, index) => (
