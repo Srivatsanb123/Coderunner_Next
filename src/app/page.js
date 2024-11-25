@@ -48,38 +48,6 @@ const languageOptions = [
   { value: "cpp", label: "C++", mode: "c_cpp" },
 ];
 
-const lightIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-    />
-  </svg>
-);
-
-const darkIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-    />
-  </svg>
-);
-
 const lightThemeStyles = `
   body {
     background-color: #F6EACB;
@@ -112,7 +80,6 @@ export default function Page() {
   };
 
   const switchToggleRef = useRef(null);
-
   useEffect(() => {
     const body = document.body;
     body.classList.toggle("dark", isDarkmode);
@@ -136,7 +103,6 @@ export default function Page() {
       head.appendChild(styleElement);
     }
   }, [isDarkmode]);
-
   //User code in localStorage
   useEffect(() => {
     const savedCode = localStorage.getItem("userCode");
@@ -240,35 +206,46 @@ export default function Page() {
         <div className="mb-2 md:mb-0">
           <h1 className="font-bold text-gray-700 text-xl">CodeRunner</h1>
         </div>
-        <button
-          className="w-20 h-10 rounded-full bg-white transition duration-300 focus:outline-none shadow"
-          onClick={toggleTheme}
-        >
-          <div
-            ref={switchToggleRef}
-            className={`w-6 h-6 md:w-10 md:h-10 relative rounded-full transition duration-500 transform ${
-              isDarkmode
-                ? "bg-gray-700 translate-x-full"
-                : "bg-yellow-500 -translate-x-2"
-            } p-1 text-white`}
+        <div className="items-center">
+          <button
+            className={`w-20 h-10 ${
+              !isDarkmode
+                ? "bg-gray-600 text-white"
+                : "bg-gray-300 border-2 text-black"
+            } rounded-l-md transition duration-300 focus:outline-none shadow`}
+            onClick={toggleTheme}
+            disabled={!isDarkmode}
           >
-            {isDarkmode ? lightIcon : darkIcon}
-          </div>
-        </button>
+            Light
+          </button>
+          <button
+            className={`w-20 h-10 ${
+              isDarkmode
+                ? "bg-gray-600 text-white"
+                : "bg-gray-300 border-2 text-black"
+            } rounded-r-md transition duration-300 focus:outline-none shadow`}
+            onClick={toggleTheme}
+            disabled={isDarkmode}
+          >
+            Dark
+          </button>
+        </div>
       </div>
 
       <div className="flex">
-        <div className="flex flex-col w-1/2"><AceEditor
-          mode={userLang.mode}
-          theme={theme}
-          width="100%"
-          height="90vh"
-          value={userCode}
-          onChange={setUserCode}
-          editorProps={{ $blockScrolling: Infinity }}
-          setOptions={editorOptions}
-          showPrintMargin={false}
-        /></div>
+        <div className="flex flex-col w-1/2">
+          <AceEditor
+            mode={userLang.mode}
+            theme={theme}
+            width="100%"
+            height="90vh"
+            value={userCode}
+            onChange={setUserCode}
+            editorProps={{ $blockScrolling: Infinity }}
+            setOptions={editorOptions}
+            showPrintMargin={false}
+          />
+        </div>
         <div className="flex flex-col w-1/2 m-2">
           <div className="flex items-center justify-between">
             <label className="p-2">Filename:</label>
@@ -284,75 +261,73 @@ export default function Page() {
               Save Code
             </button>
           </div>
-          
+
           <div className="">
-          <label className="p-2">Load File:</label>
+            <label className="p-2">Load File:</label>
             <input
               type="file"
               onChange={loadCodeFromFile}
               className="text-black p-2 bg-zinc-300 border border-gray-300 rounded-lg focus:outline-none"
             />
           </div>
-          <div className="flex flex-wrap justify-between m-2 items-stretch">
-            <div className="theme-select space-x-4 p-4">
-              <label htmlFor="themeSelect" className="">
-                Select Editor Theme:
-              </label>
-              <select
-                id="themeSelect"
-                value={theme}
-                onChange={(e) => setTheme(e.target.value)}
-                className="rounded text-black first-letter:rounded-md border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
-              >
-                {themeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="font-size-select space-x-4 p-4">
-              <label htmlFor="fontSizeSelect" className="">
-                Select Font Size:
-              </label>
-              <select
-                id="fontSizeSelect"
-                value={fontSize}
-                onChange={(e) => setFontSize(parseInt(e.target.value))}
-                className="rounded-md text-black border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
-              >
-                {fontSizeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="language-select space-x-4 p-4">
-              <label htmlFor="languageSelect" className="">
-                Select Language:
-              </label>
-              <select
-                id="languageSelect"
-                value={userLang.value}
-                onChange={(e) => {
-                  const selectedValue = e.target.value;
-                  const selectedLanguage = languageOptions.find(
-                    (option) => option.value === selectedValue
-                  );
-                  setUserLang(selectedLanguage);
-                }}
-                className="rounded-md text-black border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
-              >
-                {languageOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="theme-select space-x-4 py-4 pl-2">
+            <label htmlFor="themeSelect" className="">
+              Select Editor Theme:
+            </label>
+            <select
+              id="themeSelect"
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              className="rounded text-black first-letter:rounded-md border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
+            >
+              {themeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
-          <div>
+          <div className="font-size-select space-x-4 py-4 pl-2">
+            <label htmlFor="fontSizeSelect" className="">
+              Select Font Size:
+            </label>
+            <select
+              id="fontSizeSelect"
+              value={fontSize}
+              onChange={(e) => setFontSize(parseInt(e.target.value))}
+              className="rounded-md text-black border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
+            >
+              {fontSizeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="language-select space-x-4 py-4 pl-2">
+            <label htmlFor="languageSelect" className="">
+              Select Language:
+            </label>
+            <select
+              id="languageSelect"
+              value={userLang.value}
+              onChange={(e) => {
+                const selectedValue = e.target.value;
+                const selectedLanguage = languageOptions.find(
+                  (option) => option.value === selectedValue
+                );
+                setUserLang(selectedLanguage);
+              }}
+              className="rounded-md text-black border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
+            >
+              {languageOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="pl-2">
             {loading ? (
               <LoadingScreen />
             ) : (
@@ -360,10 +335,7 @@ export default function Page() {
                 <h3 className="text-xl mb-2">Test Cases:</h3>
                 <div className="flex">
                   <div className="add-test-case text-black bg-white m-1 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                    <button
-                      onClick={addTestCase}
-                      className="w-full"
-                    >
+                    <button onClick={addTestCase} className="w-full">
                       Add +
                     </button>
                   </div>
