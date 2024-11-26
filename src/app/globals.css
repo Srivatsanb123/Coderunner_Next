@@ -7,6 +7,70 @@ body {
   padding-right: 5px;
 }
 
+.test-cases,
+.output-carousel {
+  scroll-behavior: smooth;
+}
+
+/* Smooth scrolling for the entire container */
+.test-cases,
+.output-carousel {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar styles */
+.test-cases::-webkit-scrollbar,
+.output-carousel::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  height: 8px; /* Height of the horizontal scrollbar */
+}
+
+.test-cases::-webkit-scrollbar-thumb,
+.output-carousel::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5); /* Color of the scrollbar */
+  border-radius: 10px;
+}
+
+.test-cases::-webkit-scrollbar-track,
+.output-carousel::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.1); /* Background of the track */
+}
+
+/* Carousel setup */
+.output-carousel {
+  display: flex;
+  gap: 8px;
+  overflow-x:auto; /* Horizontal scrolling */
+  overflow-y:hidden; /* No vertical scrolling on the carousel itself */
+  max-width: 100%; /* Prevent the carousel from overflowing horizontally */
+  padding: 10px;
+  scrollbar-width: thin; /* Thin scrollbar for Firefox */
+}
+
+.output-item {
+  min-width: 80%; /* Prevent shrinking */
+  max-width: 80%; /* Ensure consistent size for each output */
+  max-height: 200px; /* Set a fixed height for each output item */
+  overflow: auto; /* Enable both horizontal and vertical scrolling inside the output */
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  scrollbar-width: thin; 
+}
+
+/* Prevent shrinking in the test cases container */
+.test-cases {
+  overflow-x:auto;
+  overflow-y:hidden;
+  white-space: nowrap;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+}
+
+
 @media (max-width: 768px) {
   .flex {
     flex-direction: column;

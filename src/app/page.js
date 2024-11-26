@@ -31,15 +31,6 @@ const themeOptions = [
   { value: "cobalt", label: "Cobalt Theme" },
 ];
 
-const fontSizeOptions = [
-  { value: 10, label: "10px" },
-  { value: 12, label: "12px" },
-  { value: 14, label: "14px" },
-  { value: 16, label: "16px" },
-  { value: 18, label: "18px" },
-  { value: 20, label: "20px" },
-];
-
 const languageOptions = [
   { value: "python", label: "Python", mode: "python" },
   { value: "javascript", label: "JavaScript", mode: "javascript" },
@@ -50,13 +41,13 @@ const languageOptions = [
 
 const lightThemeStyles = `
   body {
-    background-color: #F6EACB;
+    background-color: #F9F9F9;
   }
 `;
 
 const darkThemeStyles = `
   body.dark {
-    background-color: #36454F;
+    background-color: #24292E;
   }
 `;
 
@@ -103,7 +94,6 @@ export default function Page() {
       head.appendChild(styleElement);
     }
   }, [isDarkmode]);
-  //User code in localStorage
   useEffect(() => {
     const savedCode = localStorage.getItem("userCode");
     if (savedCode) {
@@ -208,35 +198,31 @@ export default function Page() {
         </div>
         <div className="items-center">
           <button
-            className={`w-20 h-10 ${
-              !isDarkmode
-                ? "bg-gray-600 text-white"
-                : "bg-gray-300 border-2 text-black"
+            className={`w-20 h-10  bg-blue-500 ${
+              !isDarkmode ? "border-2 border-white" : ""
             } rounded-l-md transition duration-300 focus:outline-none shadow`}
             onClick={toggleTheme}
             disabled={!isDarkmode}
           >
-            Light
+            ☀️
           </button>
           <button
-            className={`w-20 h-10 ${
-              isDarkmode
-                ? "bg-gray-600 text-white"
-                : "bg-gray-300 border-2 text-black"
+            className={`w-20 h-10 bg-gray-600 ${
+              isDarkmode ? "border-2 border-white" : ""
             } rounded-r-md transition duration-300 focus:outline-none shadow`}
             onClick={toggleTheme}
             disabled={isDarkmode}
           >
-            Dark
+            🌙
           </button>
         </div>
       </div>
 
       <div className="flex">
-        <div className="flex flex-col w-1/2">
+        <div className="flex flex-col w-3/5">
           <AceEditor
             mode={userLang.mode}
-            theme={theme}
+            theme={`${isDarkmode ? "github_dark" : "github"}`}
             width="100%"
             height="90vh"
             value={userCode}
@@ -246,63 +232,34 @@ export default function Page() {
             showPrintMargin={false}
           />
         </div>
-        <div className="flex flex-col w-1/2 m-2">
-          <div className="flex items-center justify-between">
+        <div className="flex flex-col w-2/5 m-2">
+          <div className="flex items-center">
             <label className="p-2">Filename:</label>
             <input
               type="text"
               id="filename"
               className="text-black p-2 m-1 bg-zinc-300 border w-1/2 border-gray-300 rounded-lg focus:outline-none"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  saveCodeToFile();
+                }
+              }}
             />
             <button
               onClick={saveCodeToFile}
-              className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mx-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mx-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
             >
               Save Code
             </button>
           </div>
 
-          <div className="">
+          <div className="flex items-center">
             <label className="p-2">Load File:</label>
             <input
               type="file"
               onChange={loadCodeFromFile}
-              className="text-black p-2 bg-zinc-300 border border-gray-300 rounded-lg focus:outline-none"
+              className="text-black p-2 bg-zinc-300 border  border-gray-300 rounded-lg focus:outline-none"
             />
-          </div>
-          <div className="theme-select space-x-4 py-4 pl-2">
-            <label htmlFor="themeSelect" className="">
-              Select Editor Theme:
-            </label>
-            <select
-              id="themeSelect"
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-              className="rounded text-black first-letter:rounded-md border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
-            >
-              {themeOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="font-size-select space-x-4 py-4 pl-2">
-            <label htmlFor="fontSizeSelect" className="">
-              Select Font Size:
-            </label>
-            <select
-              id="fontSizeSelect"
-              value={fontSize}
-              onChange={(e) => setFontSize(parseInt(e.target.value))}
-              className="rounded-md text-black border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
-            >
-              {fontSizeOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
           </div>
           <div className="language-select space-x-4 py-4 pl-2">
             <label htmlFor="languageSelect" className="">
@@ -334,47 +291,54 @@ export default function Page() {
               <>
                 <h3 className="text-xl mb-2">Test Cases:</h3>
                 <div className="flex">
-                  <div className="add-test-case text-black bg-white m-1 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                    <button onClick={addTestCase} className="w-full">
+                  <div className="add-test-case focus:outline-none hover:bg-gray-500 text-black bg-[#EFEFEF] m-1 font-medium rounded-lg text-sm text-center">
+                    <button onClick={addTestCase} className="px-5 py-2.5">
                       Add +
                     </button>
                   </div>
-                  <div className="del-test-case bg-white px-5 py-2.5 m-1 text-black text-center font-medium rounded-lg text-sm">
+                  <div className="del-test-case bg-[#EFEFEF] m-1 focus:outline-none hover:bg-gray-500 text-black text-center font-medium rounded-lg text-sm">
                     <button
                       onClick={deleteTestCase}
-                      className="w-full"
+                      className="px-5 py-2.5"
                       disabled={!userInput || userInput.length === 0}
                     >
                       Delete -
                     </button>
                   </div>
                 </div>
-                <div className="test-cases m-1">
+
+                <div className="test-cases m-1 overflow-x-auto whitespace-nowrap flex space-x-4 p-2 rounded-lg">
                   {userInput.map((testCase, index) => (
                     <textarea
                       key={index}
                       value={testCase}
                       onChange={(e) => handleTestCaseChange(e, index)}
                       placeholder={`Test case ${index + 1}`}
-                      className="test-input p-1 text-black  bg-zinc-300 m-2 border border-gray-300 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none placeholder-gray-400 w-60 h-24"
+                      className="test-input p-1 text-black bg-zinc-300 border border-gray-300 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none placeholder-gray-400 w-60 h-24 flex-shrink-0"
                     />
                   ))}
                 </div>
 
-                <div className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 inline-flex items-center">
-                  <button onClick={runCode} disabled={loading}>
+                <div className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 inline-flex items-center">
+                  <button
+                    onClick={runCode}
+                    className="px-5 py-2.5"
+                    disabled={loading}
+                  >
                     ▶&nbsp;Run
                   </button>
                 </div>
 
                 <h3 className="text-xl mb-2">Output:</h3>
-                {userOutput.map((output, index) => (
-                  <div className="output m-2 text-xl" key={index}>
-                    <pre className="bg-black overflow-x-auto text-white p-2">
-                      {output}
-                    </pre>
-                  </div>
-                ))}
+
+                {/* Scrollable Carousel for Output */}
+                <div className="output-carousel">
+                  {userOutput.map((output, index) => (
+                    <div className="output-item mr-4" key={index}>
+                      <pre className="overflow-auto">{output}</pre>
+                    </div>
+                  ))}
+                </div>
               </>
             )}
           </div>
