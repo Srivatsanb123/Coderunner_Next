@@ -200,14 +200,18 @@ export default function Page() {
         <h1 className="font-bold text-white text-xl">CodeRunner</h1>
         <div className="flex">
           <button
-            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-l-md"
+            className={`px-4 py-2 ${
+              !isDarkmode ? "border-2 border-white" : ""
+            } bg-blue-500 hover:bg-blue-600 rounded-l-md`}
             onClick={toggleTheme}
             disabled={!isDarkmode}
           >
             ☀️
           </button>
           <button
-            className="px-4 py-2 bg-gray-700 hover:bg-gray-800 rounded-r-md"
+            className={`px-4 py-2  bg-gray-700 hover:bg-gray-800 ${
+              isDarkmode ? "border-2 border-white" : ""
+            } rounded-r-md`}
             onClick={toggleTheme}
             disabled={isDarkmode}
           >
