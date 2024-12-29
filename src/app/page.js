@@ -2,34 +2,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import AceEditor from "react-ace";
-import "ace-builds/src-noconflict/theme-monokai";
-import "ace-builds/src-noconflict/theme-gruvbox_dark_hard";
-import "ace-builds/src-noconflict/theme-gruvbox_light_hard";
-import "ace-builds/src-noconflict/theme-dracula";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-github_dark";
-import "ace-builds/src-noconflict/theme-one_dark";
-import "ace-builds/src-noconflict/theme-nord_dark";
-import "ace-builds/src-noconflict/theme-solarized_light";
-import "ace-builds/src-noconflict/theme-cobalt";
 import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/ext-searchbox";
 import LoadingScreen from "./components/LoadingScreen";
-const themeOptions = [
-  { value: "monokai", label: "Monokai Theme" },
-  { value: "gruvbox_dark_hard", label: "Gruvbox Dark Theme" },
-  { value: "gruvbox_light_hard", label: "Gruvbox Light Theme" },
-  { value: "dracula", label: "Dracula Theme" },
-  { value: "github_dark", label: "GitHub Dark Theme" },
-  { value: "github", label: "GitHub Light Theme" },
-  { value: "one_dark", label: "One Dark Theme" },
-  { value: "nord_dark", label: "Nord Dark Theme" },
-  { value: "solarized_light", label: "Solarized Light Theme" },
-  { value: "cobalt", label: "Cobalt Theme" },
-];
 
 const languageOptions = [
   { value: "python", label: "Python", mode: "python" },
@@ -47,7 +27,7 @@ const lightThemeStyles = `
 
 const darkThemeStyles = `
   body.dark {
-    background-color: #24292E;
+    background-color: #1E1E1E;
   }
 `;
 
@@ -59,18 +39,39 @@ export default function Page() {
     mode: "python",
   });
   const [isDarkmode, setIsDarkmode] = useState(true);
-  const [userInput, setUserInput] = useState(new Array(1).fill(""));
+  const [userInput, setUserInput] = useState([""]);
   const [userOutput, setUserOutput] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [theme, setTheme] = useState("monokai");
-  const [fontSize, setFontSize] = useState(16);
+  const [editorWidth, setEditorWidth] = useState("60%");
+
   const editorOptions = {
     autoScrollEditorIntoView: true,
     copyWithEmptySelection: true,
-    fontSize: fontSize,
+
+    fontSize: 16,
   };
 
-  const switchToggleRef = useRef(null);
+  const handleDrag = (e) => {
+    e.preventDefault(); // Prevent default actions like text selection
+    document.body.style.userSelect = "none"; // Disable text selection globally
+    const newWidth = `${Math.min(
+      Math.max((e.clientX / window.innerWidth) * 100, 30),
+      70
+    )}%`;
+    setEditorWidth(newWidth);
+  };
+
+  const stopDrag = () => {
+    document.removeEventListener("mousemove", handleDrag);
+    document.removeEventListener("mouseup", stopDrag);
+    document.body.style.userSelect = ""; // Re-enable text selection
+  };
+
+  const startDrag = () => {
+    document.addEventListener("mousemove", handleDrag);
+    document.addEventListener("mouseup", stopDrag);
+  };
+
   useEffect(() => {
     const body = document.body;
     body.classList.toggle("dark", isDarkmode);
@@ -104,7 +105,6 @@ export default function Page() {
     localStorage.setItem("userCode", userCode);
   }, [userCode]);
 
-  //Functions
   function toggleTheme() {
     setIsDarkmode(!isDarkmode);
   }
@@ -138,9 +138,9 @@ export default function Page() {
     }
   }
 
-  function deleteTestCase() {
+  function deleteTestCase(index) {
     if (userInput.length === 1) return;
-    const updatedInput = userInput.slice(0, userInput.length - 1);
+    const updatedInput = userInput.filter((_, i) => i !== index);
     setUserInput(updatedInput);
   }
 
@@ -191,25 +191,23 @@ export default function Page() {
   }
 
   return (
-    <div className={isDarkmode ? "text-white" : "text-black"}>
-      <div className="bg-red-500 p-2 my-2 rounded flex flex-row justify-between items-center">
-        <div className="mb-2 md:mb-0">
-          <h1 className="font-bold text-gray-700 text-xl">CodeRunner</h1>
-        </div>
-        <div className="items-center">
+    <div
+      className={`flex flex-col h-screen overflow-auto ${
+        isDarkmode ? "text-white bg-gray-900" : "text-black bg-gray-100"
+      }`}
+    >
+      <div className="bg-indigo-500 p-2 flex justify-between items-center">
+        <h1 className="font-bold text-white text-xl">CodeRunner</h1>
+        <div className="flex">
           <button
-            className={`w-20 h-10  bg-blue-500 ${
-              !isDarkmode ? "border-2 border-white" : ""
-            } rounded-l-md transition duration-300 focus:outline-none shadow`}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-l-md"
             onClick={toggleTheme}
             disabled={!isDarkmode}
           >
             ☀️
           </button>
           <button
-            className={`w-20 h-10 bg-gray-600 ${
-              isDarkmode ? "border-2 border-white" : ""
-            } rounded-r-md transition duration-300 focus:outline-none shadow`}
+            className="px-4 py-2 bg-gray-700 hover:bg-gray-800 rounded-r-md"
             onClick={toggleTheme}
             disabled={isDarkmode}
           >
@@ -217,65 +215,82 @@ export default function Page() {
           </button>
         </div>
       </div>
-
-      <div className="flex">
-        <div className="flex flex-col w-3/5">
+      <div className="flex flex-grow">
+        {/* Left Panel */}
+        <div
+          className="flex flex-col min-w-[30%] max-w-[70%]"
+          style={{ width: editorWidth }}
+        >
           <AceEditor
             mode={userLang.mode}
             theme={`${isDarkmode ? "github_dark" : "github"}`}
             width="100%"
-            height="90vh"
+            height="100%"
+            showPrintMargin={false}
             value={userCode}
             onChange={setUserCode}
-            editorProps={{ $blockScrolling: Infinity }}
+            editorProps={{ $blockScrolling: true }}
             setOptions={editorOptions}
-            showPrintMargin={false}
           />
         </div>
-        <div className="flex flex-col w-2/5 m-2">
-          <div className="flex items-center">
-            <label className="p-2">Filename:</label>
+
+        {/* Dragger */}
+        <div
+          className={`w-2 cursor-col-resize flex justify-center items-center ${
+            isDarkmode ? "bg-gray-600" : "bg-gray-200"
+          }`}
+          onMouseDown={startDrag}
+        >
+          ||
+        </div>
+
+        {/* Right Panel */}
+        <div
+          className="flex flex-col p-4 space-y-4 overflow-y-auto"
+          style={{ width: `calc(100% - ${editorWidth})` }}
+        >
+          <div className="flex flex-col space-y-2">
+            <label htmlFor="filename" className="font-medium">
+              Filename
+            </label>
             <input
               type="text"
               id="filename"
-              className="text-black p-2 m-1 bg-zinc-300 border w-1/2 border-gray-300 rounded-lg focus:outline-none"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  saveCodeToFile();
-                }
-              }}
+              className="p-2 rounded border text-black"
+              placeholder="Enter filename"
             />
             <button
               onClick={saveCodeToFile}
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mx-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             >
               Save Code
             </button>
           </div>
-
-          <div className="flex items-center">
-            <label className="p-2">Load File:</label>
+          <div className="flex flex-col space-y-2">
+            <label htmlFor="uploadFile" className="font-medium">
+              Load File
+            </label>
             <input
               type="file"
+              id="uploadFile"
+              className="p-2 rounded border"
               onChange={loadCodeFromFile}
-              className="text-black p-2 bg-zinc-300 border  border-gray-300 rounded-lg focus:outline-none"
             />
           </div>
-          <div className="language-select space-x-4 py-4 pl-2">
-            <label htmlFor="languageSelect" className="">
-              Select Language:
+          <div className="flex flex-col space-y-2">
+            <label htmlFor="languageSelect" className="font-medium">
+              Language
             </label>
             <select
               id="languageSelect"
               value={userLang.value}
               onChange={(e) => {
-                const selectedValue = e.target.value;
                 const selectedLanguage = languageOptions.find(
-                  (option) => option.value === selectedValue
+                  (option) => option.value === e.target.value
                 );
                 setUserLang(selectedLanguage);
               }}
-              className="rounded-md text-black border-gray-300 shadow-sm focus:ring focus:ring-green-300 focus:border-green-300"
+              className="p-2 rounded border text-black"
             >
               {languageOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -284,63 +299,63 @@ export default function Page() {
               ))}
             </select>
           </div>
-          <div className="pl-2">
-            {loading ? (
-              <LoadingScreen />
-            ) : (
-              <>
-                <h3 className="text-xl mb-2">Test Cases:</h3>
-                <div className="flex">
-                  <div className="add-test-case focus:outline-none hover:bg-gray-500 text-black bg-[#EFEFEF] m-1 font-medium rounded-lg text-sm text-center">
-                    <button onClick={addTestCase} className="px-5 py-2.5">
-                      Add +
-                    </button>
-                  </div>
-                  <div className="del-test-case bg-[#EFEFEF] m-1 focus:outline-none hover:bg-gray-500 text-black text-center font-medium rounded-lg text-sm">
-                    <button
-                      onClick={deleteTestCase}
-                      className="px-5 py-2.5"
-                      disabled={!userInput || userInput.length === 0}
-                    >
-                      Delete -
-                    </button>
-                  </div>
-                </div>
-
-                <div className="test-cases m-1 overflow-x-auto whitespace-nowrap flex space-x-4 p-2 rounded-lg">
-                  {userInput.map((testCase, index) => (
-                    <textarea
-                      key={index}
-                      value={testCase}
-                      onChange={(e) => handleTestCaseChange(e, index)}
-                      placeholder={`Test case ${index + 1}`}
-                      className="test-input p-1 text-black bg-zinc-300 border border-gray-300 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none placeholder-gray-400 w-60 h-24 flex-shrink-0"
-                    />
-                  ))}
-                </div>
-
-                <div className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 inline-flex items-center">
+          <div className="flex flex-col space-y-2">
+            <h3 className="font-medium">Test Cases</h3>
+            <div className="overflow-x-auto no-scrollbar flex space-x-4">
+              {userInput.map((testCase, index) => (
+                <div
+                  key={index}
+                  className={`relative flex-shrink-0 w-64 p-2 ${
+                    isDarkmode ? "bg-gray-800" : "bg-gray-200"
+                  } rounded-md`}
+                >
+                  <textarea
+                    value={testCase}
+                    onChange={(e) => handleTestCaseChange(e, index)}
+                    className="w-full h-20 p-2 rounded border text-black resize-none"
+                    placeholder={`Test Case ${index + 1}`}
+                  />
                   <button
-                    onClick={runCode}
-                    className="px-5 py-2.5"
-                    disabled={loading}
+                    onClick={() => deleteTestCase(index)}
+                    className={`absolute top-1 right-1 w-6 h-fit text-gray-700 ${
+                      isDarkmode ? "bg-gray-800" : "bg-gray-200"
+                    } flex items-center justify-center`}
                   >
-                    ▶&nbsp;Run
+                    X
                   </button>
                 </div>
-
-                <h3 className="text-xl mb-2">Output:</h3>
-
-                {/* Scrollable Carousel for Output */}
-                <div className="output-carousel">
-                  {userOutput.map((output, index) => (
-                    <div className="output-item mr-4" key={index}>
-                      <pre className="overflow-auto">{output}</pre>
-                    </div>
-                  ))}
+              ))}
+            </div>
+            <button
+              onClick={addTestCase}
+              className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              ➕ Add Test Case
+            </button>
+          </div>
+          <button
+            onClick={runCode}
+            disabled={loading}
+            className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 font-bold"
+          >
+            {loading ? "Running..." : "▶ Run Code"}
+          </button>
+          <div className="flex flex-col space-y-2">
+            <h3 className="font-medium">Output</h3>
+            <div className="overflow-x-auto no-scrollbar flex space-x-4">
+              {userOutput.map((output, index) => (
+                <div
+                  key={index}
+                  className={`relative flex-shrink-0 w-1/2 p-2 ${
+                    isDarkmode ? "bg-gray-800" : "bg-gray-200"
+                  } rounded-md`}
+                >
+                  <pre className="w-full h-20 p-2 rounded text-black overflow-auto resize-none">
+                    {output}
+                  </pre>
                 </div>
-              </>
-            )}
+              ))}
+            </div>
           </div>
         </div>
       </div>
