@@ -253,26 +253,33 @@ export default function Page() {
           className="flex flex-col p-4 space-y-4 overflow-y-auto"
           style={{ width: `calc(100% - ${editorWidth})` }}
         >
-          <div className="flex flex-col space-y-2">
-            <label htmlFor="filename" className="font-medium">
-              Filename
+          <div
+            className="flex items-center space-x-4"
+            style={{ width: `calc(100% - ${editorWidth})` }}
+          >
+            <label
+              htmlFor="filename"
+              className="font-medium whitespace-nowrap flex-none"
+            >
+              Filename:
             </label>
             <input
               type="text"
               id="filename"
-              className="p-2 rounded border text-black"
+              className="flex-grow p-2 border rounded text-black"
               placeholder="Enter filename"
             />
             <button
               onClick={saveCodeToFile}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex-none"
             >
               Save Code
             </button>
           </div>
-          <div className="flex flex-col space-y-2">
+
+          <div className="flex flex-row space-x-4 items-center">
             <label htmlFor="uploadFile" className="font-medium">
-              Load File
+              Load File:
             </label>
             <input
               type="file"
@@ -281,9 +288,9 @@ export default function Page() {
               onChange={loadCodeFromFile}
             />
           </div>
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-row space-x-4 items-center">
             <label htmlFor="languageSelect" className="font-medium">
-              Language
+              Language:
             </label>
             <select
               id="languageSelect"
@@ -321,8 +328,10 @@ export default function Page() {
                   />
                   <button
                     onClick={() => deleteTestCase(index)}
-                    className={`absolute top-1 right-1 w-6 h-fit text-gray-700 ${
-                      isDarkmode ? "bg-gray-800" : "bg-gray-200"
+                    className={`absolute top-1 right-1 w-6 h-fit  ${
+                      isDarkmode
+                        ? "bg-gray-800 text-gray-200"
+                        : "bg-gray-200 text-gray-800"
                     } flex items-center justify-center`}
                   >
                     X
@@ -350,11 +359,9 @@ export default function Page() {
               {userOutput.map((output, index) => (
                 <div
                   key={index}
-                  className={`relative flex-shrink-0 w-1/2 p-2 ${
-                    isDarkmode ? "bg-gray-800" : "bg-gray-200"
-                  } rounded-md`}
+                  className={`relative flex-shrink-0 w-1/2 p-2 bg-gray-200 rounded-md`}
                 >
-                  <pre className="w-full h-20 p-2 rounded text-black overflow-auto resize-none">
+                  <pre className="w-full h-28 p-2 rounded text-black overflow-auto resize-none">
                     {output}
                   </pre>
                 </div>
