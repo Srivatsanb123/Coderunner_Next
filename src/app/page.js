@@ -71,6 +71,22 @@ export default function Page() {
     document.addEventListener("mousemove", handleDrag);
     document.addEventListener("mouseup", stopDrag);
   };
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Check for F5 or Ctrl + Enter
+      if (e.key === "F5" || (e.ctrlKey && e.key === "Enter")) {
+        e.preventDefault(); // Prevent the default browser refresh action
+        runCode(); // Call the runCode function
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [userCode, userInput, userLang]); // Dependencies to ensure correct values
 
   useEffect(() => {
     const body = document.body;
@@ -311,7 +327,15 @@ export default function Page() {
             </select>
           </div>
           <div className="flex flex-col space-y-2">
-            <h3 className="font-medium">Test Cases</h3>
+            <h3 className="font-medium">
+              Test Cases{" "}
+              <button
+                onClick={addTestCase}
+                className="text-white hover:bg-slate-400 rounded"
+              >
+                ➕
+              </button>
+            </h3>
             <div className="overflow-x-auto no-scrollbar flex space-x-4">
               {userInput.map((testCase, index) => (
                 <div
@@ -339,12 +363,6 @@ export default function Page() {
                 </div>
               ))}
             </div>
-            <button
-              onClick={addTestCase}
-              className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              ➕ Add Test Case
-            </button>
           </div>
           <button
             onClick={runCode}
@@ -359,7 +377,7 @@ export default function Page() {
               {userOutput.map((output, index) => (
                 <div
                   key={index}
-                  className={`relative flex-shrink-0 w-1/2 p-2 bg-gray-200 rounded-md`}
+                  className={`relative flex-shrink-0 w-fit p-2 bg-gray-200 rounded-md`}
                 >
                   <pre className="w-full h-28 p-2 rounded text-black overflow-auto resize-none">
                     {output}
