@@ -335,6 +335,15 @@ export default function Page() {
               >
                 ➕
               </button>
+              <button
+                onClick={runCode}
+                disabled={loading}
+                className={`p-2 m-2 ${
+                  isDarkmode ? "text-green-400" : "text-green-600"
+                }  rounded hover:bg-gray-500 disabled:opacity-50 font-bold`}
+              >
+                {loading ? "Running..." : "▷ Run all"}
+              </button>
             </h3>
             <div className="overflow-x-auto no-scrollbar flex space-x-4">
               {userInput.map((testCase, index) => (
@@ -350,27 +359,23 @@ export default function Page() {
                     className="w-full h-20 p-2 rounded border text-black resize-none"
                     placeholder={`Test Case ${index + 1}`}
                   />
-                  <button
-                    onClick={() => deleteTestCase(index)}
-                    className={`absolute top-1 right-1 w-6 h-fit  ${
-                      isDarkmode
-                        ? "bg-gray-800 text-gray-200"
-                        : "bg-gray-200 text-gray-800"
-                    } flex items-center justify-center`}
-                  >
-                    X
-                  </button>
+                  {userInput.length > 1 && (
+                    <button
+                      onClick={() => deleteTestCase(index)}
+                      className={`absolute top-1 right-1 w-6 h-fit ${
+                        isDarkmode
+                          ? "bg-gray-800 text-gray-200"
+                          : "bg-gray-200 text-gray-800"
+                      } flex items-center justify-center`}
+                    >
+                      X
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
           </div>
-          <button
-            onClick={runCode}
-            disabled={loading}
-            className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 font-bold"
-          >
-            {loading ? "Running..." : "▶ Run Code"}
-          </button>
+
           <div className="flex flex-col space-y-2">
             <h3 className="font-medium">Output</h3>
             <div className="overflow-x-auto no-scrollbar flex space-x-4">
