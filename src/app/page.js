@@ -180,31 +180,16 @@ export default function Page() {
 
     setLoading(true);
 
-    const promises = userInput.map((testCase) => {
-      const data = {
-        code: userCode,
-        language: userLang.label,
-        input: testCase,
-      };
-      const config = {
-        method: "post",
-        url: process.env.NEXT_PUBLIC_API_URL,
-        data: data,
-      };
-      return axios(config)
-        .then(function (response) {
-          const responseData = response.data;
-          return responseData.output;
-        })
-        .catch(function (error) {
-          console.log("Error executing code:", error);
-          return "Error executing code.";
-        });
-    });
+    const data = {
+      code: userCode,
+      language: userLang.label,
+      inputs: userInput, // Send all test cases as an array
+    };
 
-    Promise.all(promises)
-      .then((results) => {
-        setUserOutput(results);
+    axios
+      .post(process.env.NEXT_PUBLIC_API_URL, data)
+      .then((response) => {
+        setUserOutput(response.data.outputs);
       })
       .catch((error) => {
         console.log("Error executing code:", error);
@@ -388,16 +373,16 @@ export default function Page() {
           <div className="flex flex-col space-y-2">
             <h3 className="font-medium">Output</h3>
             <div className="overflow-x-auto no-scrollbar flex space-x-4">
-              {userOutput.map((output, index) => (
+              {userOutput?.map((output, index) => (
                 <div
                   key={index}
-                  className={`relative flex-shrink-0 w-fit p-2 bg-gray-200 rounded-md`}
+                  className="relative flex-shrink-0 w-fit p-2 bg-gray-200 rounded-md"
                 >
                   <pre className="w-full h-28 p-2 rounded text-black overflow-auto resize-none">
                     {output}
                   </pre>
                 </div>
-              ))}
+              )) || <p>No output available</p>}
             </div>
           </div>
         </div>
