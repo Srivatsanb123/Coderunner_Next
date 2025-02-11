@@ -47,30 +47,37 @@ export default function Page() {
   const editorOptions = {
     autoScrollEditorIntoView: true,
     copyWithEmptySelection: true,
-
     fontSize: 16,
   };
 
-  const handleDrag = (e) => {
-    e.preventDefault(); // Prevent default actions like text selection
+  // Updated handleDrag to support both mouse and touch events
+  const handleDrag = (clientX) => {
     document.body.style.userSelect = "none"; // Disable text selection globally
     const newWidth = `${Math.min(
-      Math.max((e.clientX / window.innerWidth) * 100, 30),
+      Math.max((clientX / window.innerWidth) * 100, 30),
       70
     )}%`;
     setEditorWidth(newWidth);
   };
 
+  const onMouseMove = (e) => handleDrag(e.clientX);
+  const onTouchMove = (e) => handleDrag(e.touches[0].clientX);
+
   const stopDrag = () => {
-    document.removeEventListener("mousemove", handleDrag);
+    document.removeEventListener("mousemove", onMouseMove);
     document.removeEventListener("mouseup", stopDrag);
+    document.removeEventListener("touchmove", onTouchMove);
+    document.removeEventListener("touchend", stopDrag);
     document.body.style.userSelect = ""; // Re-enable text selection
   };
 
   const startDrag = () => {
-    document.addEventListener("mousemove", handleDrag);
+    document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", stopDrag);
+    document.addEventListener("touchmove", onTouchMove);
+    document.addEventListener("touchend", stopDrag);
   };
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       // Check for F5 or Ctrl + Enter
@@ -86,7 +93,7 @@ export default function Page() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [userCode, userInput, userLang]); // Dependencies to ensure correct values
+  }, [userCode, userInput, userLang]);
 
   useEffect(() => {
     const body = document.body;
@@ -111,12 +118,14 @@ export default function Page() {
       head.appendChild(styleElement);
     }
   }, [isDarkmode]);
+
   useEffect(() => {
     const savedCode = localStorage.getItem("userCode");
     if (savedCode) {
       setUserCode(savedCode);
     }
   }, []);
+
   useEffect(() => {
     localStorage.setItem("userCode", userCode);
   }, [userCode]);
@@ -254,12 +263,12 @@ export default function Page() {
           />
         </div>
 
-        {/* Dragger */}
         <div
-          className={`w-2 cursor-col-resize flex justify-center items-center ${
+          className={`w-4 cursor-col-resize flex justify-center items-center ${
             isDarkmode ? "bg-gray-600" : "bg-gray-200"
           }`}
           onMouseDown={startDrag}
+          onTouchStart={startDrag} // Added touch support
         >
           ||
         </div>
@@ -282,7 +291,7 @@ export default function Page() {
             <input
               type="text"
               id="filename"
-              className="flex-grow p-2 border rounded text-black"
+              className="flex p-2 border rounded text-black"
               placeholder="Enter filename"
             />
             <button
